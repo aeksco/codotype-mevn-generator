@@ -1,6 +1,6 @@
 const httpMocks = require('node-mocks-http');
 const assert = require('chai').assert;
-const { JWT_HEADER, JWT_HEADER_ALT, USER_MOCK } = require('../../../test/utils');
+const { JWT_HEADER, JWT_HEADER_ALT } = require('../../../test/utils');
 const { requireAuthenticated, requireRole, requireAdmin } = require('./authorization')
 
 // // // //

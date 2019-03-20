@@ -3,13 +3,13 @@ describe('GET /api/<%= schema.identifier_plural %>/:id', () => {
   // Stores <%= schema.identifier %>_instance in outer scope
   let <%= schema.identifier %>_instance
 
-  // Creates <%= mockToken %> record before running tests
+  // Creates <%= schema.class_name %> mock record before running tests
   before(() => {
-    <%= schema.identifier %>_instance = new <%= schema.class_name %>(<%= mockToken %>)
+    <%= schema.identifier %>_instance = new <%= schema.class_name %>(build<%= schema.class_name %>())
     return <%= schema.identifier %>_instance.save()
   });
 
-  // Destroys <%= mockToken %> record after running tests
+  // Destroys <%= schema.class_name %> mock record after running tests
   after(() => { return <%= schema.class_name %>.deleteOne(<%= schema.identifier %>_instance) });
 
   it('should respond with JSON object', (done) => {

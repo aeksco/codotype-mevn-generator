@@ -25,16 +25,11 @@ module.exports = {
       // Stores the spec path
       specPaths.push(`../src/api/${schema.identifier}/${schema.identifier}.spec.js`)
 
-      // Builds model mock
-      let newModel = this.buildMock({ schemas: blueprint.schemas, schema: schema })
-      let mockToken = `${schema.identifier.toUpperCase()}_MOCK`
-      if (schema.identifier !== 'user') { mocks[mockToken] = newModel }
-
       // backend/api/resource/resource.spec.js
       await this.copyTemplate(
         this.templatePath('resource.spec.js'),
         this.destinationPath(specFilePath),
-        { schema, mockToken }
+        { schema }
       );
 
     }

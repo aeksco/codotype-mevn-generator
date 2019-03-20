@@ -2,7 +2,7 @@ const app = require('../../app');
 const request = require('supertest');
 const <%= schema.class_name %> = require('./<%= schema.identifier %>.model')
 const { JWT_HEADER } = require('../../../test/utils');
-const { <%= mockToken %> } = require('../../../test/mocks');
+const { build<%= schema.class_name %> } = require('../../../test/mocks');
 
 const API_ROOT = '/api/<%= schema.identifier_plural %>'
 

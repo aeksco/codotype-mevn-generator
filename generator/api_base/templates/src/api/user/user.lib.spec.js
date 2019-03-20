@@ -9,16 +9,11 @@ const {
   validateResetToken,
   verifyPassword,
 } = require('./user.lib')
-const { USER_MOCK } = require('../../../test/mocks');
+const { buildUser } = require('../../../test/mocks');
 
 // // // //
 
 describe('/lib/user.lib.js', () => {
-
-  // Destroys USER_MOCK record before running tests
-  before(() => {
-    return User.deleteOne({ email: USER_MOCK.email })
-  });
 
   describe('encryptPassword', () => {
     it('return the same result with if arguments do not change', () => {
@@ -46,11 +41,11 @@ describe('/lib/user.lib.js', () => {
 
 
   describe('generatePasswordResetToken', () => {
-    let user = new User(USER_MOCK)
+    let user = new User(buildUser())
 
-    // Destroys USER_MOCK record
+    // Destroys user record
     after(() => {
-      return User.deleteOne({ email: USER_MOCK.email })
+      return User.deleteOne({ email: user.email })
     });
 
     it('set user.password_reset_token and user.password_reset_expiration', () => {
@@ -66,10 +61,11 @@ describe('/lib/user.lib.js', () => {
 
 
   describe('setHashedPassword', () => {
-    let user = new User(USER_MOCK)
+    let userData = buildUser()
+    let user = new User(userData)
     it('encrypt password and assign result to user.password', () => {
       setHashedPassword.call(user, () => {
-        const expected = encryptPassword(USER_MOCK.password, user.salt)
+        const expected = encryptPassword(userData.password, user.salt)
         assert.equal(user.password, expected)
       });
     })
@@ -107,12 +103,12 @@ describe('/lib/user.lib.js', () => {
 
 
   describe('validateResetToken', () => {
-    let user = new User(USER_MOCK)
+    let user = new User(buildUser())
     user.generatePasswordResetToken()
 
-    // Destroys USER_MOCK record
+    // Destroys user record
     after(() => {
-      return User.deleteOne({ email: USER_MOCK.email })
+      return User.deleteOne({ email: user.email })
     });
 
     it('return true if matching tokens and current time is before expiration date', () => {
@@ -134,12 +130,13 @@ describe('/lib/user.lib.js', () => {
 
 
   describe('verifyPassword', () => {
-    let user = new User(USER_MOCK)
+    let userData = buildUser()
+    let user = new User(buildUser())
     user.salt = 'SALT'
-    user.password = encryptPassword(USER_MOCK.password, user.salt)
+    user.password = encryptPassword(userData.password, user.salt)
 
     it('return true if encrypted passwords match', () => {
-      assert.equal(user.verifyPassword(USER_MOCK.password), true)
+      assert.equal(user.verifyPassword(userData.password), true)
     });
 
     it('return false if encrypted passwords do not match', () => {

@@ -2,7 +2,7 @@ const request = require('supertest');
 const app = require('../../app');
 const User = require('../user/user.model');
 const { JWT_PAYLOAD, JWT_HEADER } = require('../../../test/utils');
-const { USER_MOCK, USER_MOCK_ALT } = require('../../../test/mocks');
+const { buildUser } = require('../../../test/mocks');
 
 // // // //
 
@@ -12,23 +12,26 @@ describe('Auth API', () => {
 
   describe('POST /api/auth/register', () => {
 
-    // Creates USER_MOCK record before running tests
+    let newUserOne = buildUser()
+    let newUserTwo = buildUser()
+
+    // Creates newUserOne record before running tests
     before(() => {
-      let user = new User(USER_MOCK)
+      let user = new User(newUserOne)
       return user.save()
     });
 
-    // Destroys USER_MOCK and USER_MOCK_ALT records after running tests
+    // Destroys user records after running tests
     after(async () => {
-      await User.deleteOne({ email: USER_MOCK.email })
-      return User.deleteOne({ email: USER_MOCK_ALT.email })
+      await User.deleteOne({ email: newUserOne.email })
+      return User.deleteOne({ email: newUserTwo.email })
     });
 
     // Valid user registration
     it('should register user', (done) => {
       request(app)
       .post(API_ROOT + '/register')
-      .send(USER_MOCK_ALT)
+      .send(newUserTwo)
       .expect(200)
       .end((err, res) => {
         if (err) return done(err);
@@ -41,7 +44,7 @@ describe('Auth API', () => {
     it('should NOT register user', (done) => {
       request(app)
       .post(API_ROOT + '/register')
-      .send(USER_MOCK)
+      .send(newUserOne)
       .expect(409)
       .end((err, res) => {
         if (err) return done(err);
@@ -56,19 +59,20 @@ describe('Auth API', () => {
 
   describe('POST /api/auth/login', () => {
 
-    // Creates USER_MOCK record before running tests
+    // Creates loginUser record before running tests
+    let loginUser = buildUser()
     before(() => {
-      let user = new User(USER_MOCK)
+      let user = new User(loginUser)
       return user.save()
     });
 
-    // Destroys USER_MOCK record after running tests
-    after(() => { return User.deleteOne({ email: USER_MOCK.email }) });
+    // Destroys loginUser record after running tests
+    after(() => { return User.deleteOne({ email: loginUser.email }) });
 
     // Valid user authentication
     it('should authenticate user', (done) => {
-      // Pulls email & password from USER_MOCK
-      const { email, password } = USER_MOCK;
+      // Pulls email & password from loginUser
+      const { email, password } = loginUser;
 
       request(app)
       .post(API_ROOT + '/login')
@@ -83,8 +87,8 @@ describe('Auth API', () => {
 
     // Invalid password
     it('should NOT authenticate user', (done) => {
-      // Pulls email & password from USER_MOCK, defines invalid password
-      const { email } = USER_MOCK;
+      // Pulls email & password from loginUser, defines invalid password
+      const { email } = loginUser;
       const password = 'not-actually-the-password';
 
       request(app)
@@ -103,19 +107,21 @@ describe('Auth API', () => {
 
   describe('POST /api/auth/forgot_password', () => {
 
-    // Creates USER_MOCK record before running tests
+    let user = buildUser()
+
+    // Creates user record before running tests
     before(() => {
-      return new User(USER_MOCK).save()
+      return new User(user).save()
     });
 
-    // Destroys USER_MOCK record after running tests
-    after(() => { return User.deleteOne({ email: USER_MOCK.email }) });
+    // Destroys user record after running tests
+    after(() => { return User.deleteOne({ email: user.email }) });
 
     // User exists, valid request
     it('valid email should return 200', (done) => {
       request(app)
       .post(API_ROOT + '/forgot_password')
-      .send({ email: USER_MOCK.email })
+      .send({ email: user.email })
       .expect(200)
       .end((err, res) => {
         if (err) return done(err);
@@ -128,7 +134,7 @@ describe('Auth API', () => {
     it('unregistered email should return 400', (done) => {
       request(app)
       .post(API_ROOT + '/forgot_password')
-      .send({ email: USER_MOCK_ALT.email })
+      .send({ email: buildUser().email })
       .expect(400)
       .end((err, res) => {
         if (err) return done(err);
@@ -158,15 +164,16 @@ describe('Auth API', () => {
 
     // Scopes user for use inside `it` block
     let user;
+    let userData = buildUser()
 
-    // Creates USER_MOCK record before running tests
+    // Creates userData record before running tests
     before(() => {
-      user = new User(USER_MOCK)
+      user = new User(userData)
       return user.generatePasswordResetToken()
     });
 
-    // Destroys USER_MOCK record after running tests
-    after(() => { return User.deleteOne({ email: USER_MOCK.email }) });
+    // Destroys userData record after running tests
+    after(() => { return User.deleteOne({ email: userData.email }) });
 
     // Sends valid password_reset_token
     it('valid user.password_reset_token should return 200', (done) => {
