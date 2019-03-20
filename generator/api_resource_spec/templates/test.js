@@ -4,7 +4,12 @@ require('dotenv').config({ path: path.resolve(process.cwd(), '.env.test') });
 
 // Mongoose setup & configuration
 const mongoose = require('mongoose')
-mongoose.Promise = global.Promise
+
+// Mongoose Deprecations
+// https://mongoosejs.com/docs/deprecations.html
+mongoose.set('useNewUrlParser', true)
+mongoose.set('useFindAndModify', false)
+mongoose.set('useCreateIndex', true)
 
 // Chai configuration
 const chai = require("chai");
@@ -28,6 +33,7 @@ require('../src/lib/jwt.spec');
 require('../src/lib/mailer.spec');
 require('../src/lib/pagination.spec');
 require('../src/api/middleware/authorization.spec');
+require('../src/api/user/user.lib.spec');
 
 // Import all spec & integration tests here
 require('../src/api/auth/auth.spec')

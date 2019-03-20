@@ -1,9 +1,6 @@
 const mongoose = require('mongoose')
 const {
   validateEmail,
-  encryptPassword,
-  generateSalt,
-  validatePresenceOf,
   generatePasswordResetToken,
   validateResetToken,
   verifyPassword,
@@ -67,9 +64,9 @@ UserModel.statics.findOneByEmail = function (email) {
   .exec()
 }
 
-// verify
+// verifyPassword
 // Verifies the password parameter of POST /auth/login requests
-UserModel.method('verify', verifyPassword)
+UserModel.method('verifyPassword', verifyPassword)
 
 // Return true if the reset token is valid for this user
 UserModel.method('validateResetToken', validateResetToken)
@@ -83,10 +80,7 @@ UserModel.pre('validate', setHashedPassword)
 // assignAdmin
 // Assigns admin priviledges to a user
 UserModel.method('assignAdmin', function () {
-  // Assigns true to `admin` attribute
   this.admin = true
-
-  // Returns `save` Promise
   return this.save()
 })
 

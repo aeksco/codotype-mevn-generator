@@ -8,12 +8,6 @@ const byteSize = 16
 
 // // // //
 
-// Helper function for validating emails
-module.exports.validateEmail = (email) => {
-  const re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-  return re.test(email)
-}
-
 // TODO - document
 const encryptPassword = (password, salt) => {
 
@@ -27,12 +21,13 @@ const encryptPassword = (password, salt) => {
 
 // TODO - document
 const validatePresenceOf = (value) => {
-  return value && value.length;
+  return !!value && !!value.length;
 }
 
-// TODO - document & test
-const generateSalt = () => {
-  return crypto.randomBytes(byteSize).toString('base64')
+// Helper function for validating emails
+module.exports.validateEmail = (email) => {
+  const re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+  return re.test(email)
 }
 
 // TODO - document
@@ -81,7 +76,7 @@ module.exports.setHashedPassword = function (next) {
 
   // Generates user.salt
   // TODO - DOCUMENT MORE
-  this.salt = generateSalt()
+  this.salt = crypto.randomBytes(byteSize).toString('base64')
 
   // TODO - DOCUMENT
   const hashedPassword = encryptPassword(this.password, this.salt)
@@ -95,16 +90,5 @@ module.exports.setHashedPassword = function (next) {
 
 // // // //
 
-// assignAdmin
-// Assigns admin priviledges to a user
-// UserModel.method('assignAdmin', function () {
-//     // Assigns true to `admin` attribute
-//     this.admin = true
-
-//     // Returns `save` Promise
-//     return this.save()
-// })
-
-module.exports.generateSalt = generateSalt
 module.exports.encryptPassword = encryptPassword
 module.exports.validatePresenceOf = validatePresenceOf

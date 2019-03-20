@@ -69,7 +69,7 @@ exports.login = (req, res) => {
     }
 
     // User does exists - verify the password parameter
-    if (!user.verify(password)) {
+    if (!user.verifyPassword(password)) {
       throw new Error('Login failed - invalid password.')
       return
     }
