@@ -1,6 +1,6 @@
 {
   "id": "codotype-mevn-generator",
-  "label": "MEVN Fullstack Generator",
+  "label": "MEVN Fullstack",
   "icon": "https://res.cloudinary.com/codotype/image/upload/v1551192656/tech-logos/vue.png",
   "description": "Instantly generate full-stack web apps with MongoDB, Express, and Vue.js, and Node.js",
   "tech_tags": ["Vue", "Vuex", "Node.js", "Express.js", "MongoDB", "Axios", "Bootstrap", "JavaScript", "ES6"],
